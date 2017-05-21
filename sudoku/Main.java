@@ -14,6 +14,7 @@ import static java.util.concurrent.TimeUnit.*;
 
 class SharedObject {
     public static volatile List<Long> timeRecords = new ArrayList<Long>();
+    public static volatile List<Long> nodeRecords = new ArrayList<Long>();
 }
 
 class Experiment {
@@ -47,8 +48,11 @@ class Experiment {
         System.out.println("Took "+ (endTime - startTime) + " ns or " + NANOSECONDS.toMillis((endTime - startTime)) + " ms or " + NANOSECONDS.toSeconds((endTime - startTime)) + " s" + " Going through nodes " + instance.nodeCount());
         
         List<Long> timeRecords = SharedObject.timeRecords;
+        List<Long> nodeRecords = SharedObject.nodeRecords;
+         
         timeRecords.add(NANOSECONDS.toMillis((endTime - startTime)));
-        
+        nodeRecords.add((long) instance.nodeCount());
+
         // Get average and std Time
         Long totalTime = 0l;
         for(Long recond : timeRecords) totalTime += recond;
@@ -58,7 +62,18 @@ class Experiment {
 		stdTime = stdTime / timeRecords.size();
 		stdTime = Math.sqrt(stdTime);
 		
-        System.out.println("In average: "+ timeRecords.size() + " 's exp in avg " + averageTime + " and in std " + stdTime);
+        System.out.println("Time - In average: "+ timeRecords.size() + " 's exp in avg " + averageTime + " and in std " + stdTime);
+
+        // Get average and std Node
+        Long totalNode = 0l;
+        for(Long recond : nodeRecords) totalNode += recond;
+        double averageNode = totalNode/nodeRecords.size();
+		double stdNode = 0d;
+		for(Long recond : nodeRecords) stdNode += Math.pow(recond - averageNode, 2);
+		stdNode = stdNode / nodeRecords.size();
+		stdNode = Math.sqrt(stdNode);
+		
+        System.out.println("Nodes - In average: "+ nodeRecords.size() + " 's exp in avg " + averageNode + " and in std " + stdNode);
 
         //instance.print();
 
@@ -102,8 +117,10 @@ class ExperimentThread implements Runnable {
         System.out.println("Took "+ (endTime - startTime) + " ns or " + NANOSECONDS.toMillis((endTime - startTime)) + " ms or " + NANOSECONDS.toSeconds((endTime - startTime)) + " s" + " Going through nodes " + instance.nodeCount());
         
         List<Long> timeRecords = SharedObject.timeRecords;
+        List<Long> nodeRecords = SharedObject.nodeRecords;
         timeRecords.add(NANOSECONDS.toMillis((endTime - startTime)));
-        
+        nodeRecords.add((long) instance.nodeCount());
+
         // Get average and std Time
         Long totalTime = 0l;
         for(Long recond : timeRecords) totalTime += recond;
@@ -113,7 +130,18 @@ class ExperimentThread implements Runnable {
 		stdTime = stdTime / timeRecords.size();
 		stdTime = Math.sqrt(stdTime);
 		
-        System.out.println("In average: "+ timeRecords.size() + " 's exp in avg " + averageTime + " and in std " + stdTime);
+        System.out.println("Time - In average: "+ timeRecords.size() + " 's exp in avg " + averageTime + " and in std " + stdTime);
+
+        // Get average and std Node
+        Long totalNode = 0l;
+        for(Long recond : nodeRecords) totalNode += recond;
+        double averageNode = totalNode/nodeRecords.size();
+		double stdNode = 0d;
+		for(Long recond : nodeRecords) stdNode += Math.pow(recond - averageNode, 2);
+		stdNode = stdNode / nodeRecords.size();
+		stdNode = Math.sqrt(stdNode);
+		
+        System.out.println("Nodes - In average: "+ nodeRecords.size() + " 's exp in avg " + averageNode + " and in std " + stdNode);
 
         //instance.print();
 
@@ -188,7 +216,7 @@ public class Main {
             }
         } while (!(d >= 1)); 
 
-        System.out.println("Multithreading? (1 = no, 2 = yes)");    
+        System.out.println("MultiThreading? (1 = no, 2 = yes)");    
         
         int o = 0;
         
