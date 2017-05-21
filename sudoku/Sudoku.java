@@ -109,7 +109,7 @@ public final class Sudoku extends AbstractSudoku {
     }
     
     protected List<Variable> getUnassignedVars() {
-        //Collections.shuffle(this.unassignedVars, random);
+        if (mode == 3) Collections.shuffle(this.unassignedVars, random);
         return this.unassignedVars;
     }
     
