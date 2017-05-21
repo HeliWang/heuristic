@@ -16,13 +16,66 @@ class SharedObject {
     public static volatile List<Long> timeRecords = new ArrayList<Long>();
 }
 
-class Experiment implements Runnable {
+class Experiment {
+   int ID;
+   int n;
+   
+   public Experiment(int oID, int on) {
+      this.ID = oID;
+      this.n = on;
+   }
+   
+   public void run() {
+      System.out.println("Running " +  ID + " on data set" + n);
+      try {
+               
+        Sudoku instance = null;
+        
+        try {
+           instance = new Sudoku(n);
+        } catch (Exception e) {
+           System.out.println("Failed to load dataSet Num." + n);
+           e.printStackTrace();
+        }
+              
+        long startTime = System.nanoTime();
+        //code
+        if (instance.backtrack()) System.out.println("Runner " +  ID + "Find a solution!"); else System.out.println("Runner " +  ID + "No solution!");
+        
+        long endTime = System.nanoTime();
+        
+        System.out.println("Took "+ (endTime - startTime) + " ns or " + NANOSECONDS.toMillis((endTime - startTime)) + " ms or " + NANOSECONDS.toSeconds((endTime - startTime)) + " s" + " Going through nodes " + instance.nodeCount());
+        
+        List<Long> timeRecords = SharedObject.timeRecords;
+        timeRecords.add(NANOSECONDS.toMillis((endTime - startTime)));
+        
+        // Get average and std Time
+        Long totalTime = 0l;
+        for(Long recond : timeRecords) totalTime += recond;
+        double averageTime = totalTime/timeRecords.size();
+		double stdTime = 0d;
+		for(Long recond : timeRecords) stdTime += Math.pow(recond - averageTime, 2);
+		stdTime = stdTime / timeRecords.size();
+		stdTime = Math.sqrt(stdTime);
+		
+        System.out.println("In average: "+ timeRecords.size() + " 's exp in avg " + averageTime + " and in std " + stdTime);
+
+        //instance.print();
+
+      } catch (Exception e) {
+         System.out.println("Thread " +  ID + " got interrupted.");
+      }
+   }
+
+}
+    
+class ExperimentThread implements Runnable {
    Thread experimentThread;
    int ID;
    int n;
   
    
-   public Experiment(int oID, int on) {
+   public ExperimentThread(int oID, int on) {
       this.ID = oID;
       this.n = on;
    }
@@ -134,10 +187,28 @@ public class Main {
                 continue;
             }
         } while (!(d >= 1)); 
-  
+
+        System.out.println("Multithreading? (1 = no, 2 = yes)");    
+        
+        int o = 0;
+        
+        do {
+            try {
+                o = Integer.parseInt(c.readLine()); 
+            } catch (Exception e) {
+                System.out.println("Invalid Input. Try Again");  
+                continue;
+            }
+        } while (!(o >= 1)); 
+        
         for (int rep = 1; rep <= r; rep++){
-            Experiment e = new Experiment(rep, n);
-            e.start();
+            if (o == 2) {
+                ExperimentThread e = new ExperimentThread(rep, n);
+                e.start();
+            } else {
+                Experiment e = new Experiment(rep, n);
+                e.run();
+            }
         }
           
     }
