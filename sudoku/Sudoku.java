@@ -82,7 +82,8 @@ public class Sudoku extends AbstractSudoku {
         List<Integer> domain = orderDomainValues(var, curUnassigned);
     	  
         for (int value : domain) {
-            if (consistencyCheck (var, value)) {
+            boolean consistencyCheckResult = consistencyCheck (var, value);
+            if (consistencyCheckResult) {
                 var.setVal(value);
                 boolean inferenceResult = this.mode == 1 || inference(var);
                 /*
@@ -94,7 +95,7 @@ public class Sudoku extends AbstractSudoku {
                 if ( inferenceResult && backtrack()) return true;
             }
             var.setVal(0); //set var back
-            if (this.mode != 1) inference(var);
+            if (this.mode != 1 && consistencyCheckResult) inferenceReset(var);
         }
 
         curUnassigned.add(var);
@@ -166,9 +167,9 @@ public class Sudoku extends AbstractSudoku {
         List<Variable> sameBox = new ArrayList<Variable>();
         for (int u = 0; u < 3; u++) for (int v = 0; v < 3; v++) sameBox.add(assignment.get(3* (var.x/3) + u).get(3* (var.y/3) + v));
         
-        resetDomain(sameRow, var);
-        resetDomain(sameColumn, var);
-        resetDomain(sameBox, var);
+        pushDomain(sameRow, var);
+        pushDomain(sameColumn, var);
+        pushDomain(sameBox, var);
          
         inference(sameRow, var);
         inference(sameColumn, var);
@@ -177,15 +178,42 @@ public class Sudoku extends AbstractSudoku {
 	    return checkDomain(sameRow) && checkDomain(sameColumn) && checkDomain(sameBox);
     }
 
-    private void resetDomain(List<Variable> vars, Variable self){
-        // Reset each domain
+    protected void inferenceReset(Variable var) {
+        // Same Row
+        List<Variable> sameRow = assignment.get(var.x);
+        
+        // Same Column
+        List<Variable> sameColumn = new ArrayList<Variable>();
+        for (List<Variable> row : assignment) {
+            sameColumn.add(row.get(var.y));
+        }
+        // Same Box
+        List<Variable> sameBox = new ArrayList<Variable>();
+        for (int u = 0; u < 3; u++) for (int v = 0; v < 3; v++) sameBox.add(assignment.get(3* (var.x/3) + u).get(3* (var.y/3) + v));
+        
+        popDomain(sameRow, var);
+        popDomain(sameColumn, var);
+        popDomain(sameBox, var);
+    }
+    
+    private void pushDomain(List<Variable> vars, Variable self){
+         //System.out.println("pu");
         for (Variable var : vars) {
-            if (var.val != 0) continue;
-            var.domain = new ArrayList<Integer>();
-            for(int i = 1; i <= 9; i++) var.domain.add(i);
+            var.domainHist.push(new ArrayList<Integer>(var.domain));
         }
     }
     
+    private void popDomain(List<Variable> vars, Variable self){
+        // Reset each domain
+        for (Variable var : vars) {
+            if (!(var.domainHist.size() > 0)) {
+                System.out.println("Er!");
+                for(int i = 1; i <= 9; i++) var.domain.add(i);
+                continue;
+            }
+            var.domain = var.domainHist.pop();
+        }
+    }
     private void inference(List<Variable> vars, Variable self){
         for (Variable var : vars) {
             if (var.val == 0) continue;

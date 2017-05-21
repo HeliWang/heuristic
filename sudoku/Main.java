@@ -38,7 +38,7 @@ class Experiment {
            System.out.println("Failed to load dataSet Num." + n);
            e.printStackTrace();
         }
-              
+         //     instance.print();
         long startTime = System.nanoTime();
         //code
         if (instance.backtrack()) System.out.println("Runner " +  ID + " :) Find a solution!"); else System.out.println("Runner " +  ID + " - !!!! No solution !!!!");
