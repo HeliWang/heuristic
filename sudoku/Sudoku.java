@@ -68,8 +68,7 @@ public class Sudoku extends AbstractSudoku {
         for (int value : domain) {
             if (consistencyCheck (var, value)) {
                 var.setVal(value);
-                if (!inference(var)) continue;
-                if (backtrack()) return true;
+                if (inference(var) && backtrack()) return true;
             }
             var.setVal(0); //set var back
             inference(var);

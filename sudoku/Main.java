@@ -39,7 +39,7 @@ class Experiment {
               
         long startTime = System.nanoTime();
         //code
-        if (instance.backtrack()) System.out.println("Runner " +  ID + "Find a solution!"); else System.out.println("Runner " +  ID + "No solution!");
+        if (instance.backtrack()) System.out.println("Runner " +  ID + " :) Find a solution!"); else System.out.println("Runner " +  ID + " - !!!! No solution !!!!");
         
         long endTime = System.nanoTime();
         
@@ -104,7 +104,7 @@ class ExperimentThread implements Runnable {
               
         long startTime = System.nanoTime();
         //code
-        if (instance.backtrack()) System.out.println("Runner " +  ID + " Find a solution!"); else System.out.println("Runner " +  ID + " Find no solution!");
+        if (instance.backtrack()) System.out.println("Runner " +  ID + " Find a solution!"); else System.out.println("Runner " +  ID + " Find NO solution!");
         
         long endTime = System.nanoTime();
         
