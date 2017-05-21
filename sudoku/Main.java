@@ -20,18 +20,20 @@ class SharedObject {
 class Experiment {
    int ID;
    int n;
+   int mode;
    
-   public Experiment(int oID, int on) {
+   public Experiment(int oID, int on, int mode) {
       this.ID = oID;
       this.n = on;
+      this.mode = mode;
    }
    
    public void run() {
-      System.out.println("Running " +  ID + " on data set" + n);  
+      System.out.println("Running " +  ID + " on data set" + n + " mode " + mode);  
         Sudoku instance = null;
         
         try {
-           instance = new Sudoku(n);
+           instance = new Sudoku(n, mode);
         } catch (Exception e) {
            System.out.println("Failed to load dataSet Num." + n);
            e.printStackTrace();
@@ -82,21 +84,21 @@ class ExperimentThread implements Runnable {
    Thread experimentThread;
    int ID;
    int n;
+   int mode;
   
    
-   public ExperimentThread(int oID, int on) {
+   public ExperimentThread(int oID, int on, int mode) {
       this.ID = oID;
       this.n = on;
+      this.mode = mode;
    }
    
    public void run() {
-      System.out.println("Running " +  ID + " on data set" + n);
+      System.out.println("Running " +  ID + " on data set" + n  + " mode " + mode);
       try {
-               
         Sudoku instance = null;
-        
         try {
-           instance = new Sudoku(n);
+           instance = new Sudoku(n, mode);
         } catch (Exception e) {
            System.out.println("Failed to load dataSet Num." + n);
            e.printStackTrace();
@@ -225,10 +227,10 @@ public class Main {
         
         for (int rep = 1; rep <= r; rep++){
             if (o == 2) {
-                ExperimentThread e = new ExperimentThread(rep, n);
+                ExperimentThread e = new ExperimentThread(rep, n, m);
                 e.start();
             } else {
-                Experiment e = new Experiment(rep, n);
+                Experiment e = new Experiment(rep, n, m);
                 e.run();
             }
         }

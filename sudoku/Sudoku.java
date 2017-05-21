@@ -10,8 +10,8 @@ import java.nio.charset.Charset;
 import java.net.URISyntaxException;
 
 public class Sudoku extends AbstractSudoku {
-    public Sudoku(int dataSet) throws IOException, URISyntaxException {
-        
+    public Sudoku(int dataSet, int mode) throws IOException, URISyntaxException {
+        this.mode = mode;
         nodeCount = 0;
         assignment = new ArrayList<List<Variable>>();
         unassignedVars = new ArrayList<Variable>();
@@ -68,10 +68,10 @@ public class Sudoku extends AbstractSudoku {
         for (int value : domain) {
             if (consistencyCheck (var, value)) {
                 var.setVal(value);
-                if (inference(var) && backtrack()) return true;
+                if ( (this.mode == 1 || inference(var)) && backtrack()) return true;
             }
             var.setVal(0); //set var back
-            inference(var);
+            if (this.mode != 1) inference(var);
         }
 
         curUnassigned.add(0,var);

@@ -20,6 +20,13 @@ abstract class AbstractSudoku implements SudokuBase {
      */
    protected List<Variable> unassignedVars;
    
+      
+   /**
+     * Current Mode (1 B, 2 B+FC, 3 B+FC+H)
+     */
+   protected int mode;
+   
+   
    /**
      * Current random
      */
