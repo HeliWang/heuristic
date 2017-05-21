@@ -21,6 +21,11 @@ abstract class AbstractSudoku implements SudokuBase {
    protected List<Variable> unassignedVars;
    
    /**
+     * Current random
+     */
+   protected Random random = new Random(System.nanoTime());
+    
+   /**
     * @return      return results as a list of unassigned vars
     */
    protected abstract List<Variable> getUnassignedVars();
@@ -46,9 +51,9 @@ abstract class AbstractSudoku implements SudokuBase {
    protected abstract boolean consistencyCheck(Variable var, int val);
    
    /**
-    * @param vars the results after calling getUnassignedVars(), the list of unassigned vars
-    * @return      return if forward checking finds an unassigned var with empty domain
+    * @param var the var making inference on the domain of hese unassigned vars
+    * @return      return false if forward checking finds an unassigned var with empty domain
     */
-   protected abstract boolean inference(List<Variable> vars);
+   protected abstract boolean inference(Variable var);
    
 }

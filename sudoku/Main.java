@@ -27,9 +27,7 @@ class Experiment {
    }
    
    public void run() {
-      System.out.println("Running " +  ID + " on data set" + n);
-      try {
-               
+      System.out.println("Running " +  ID + " on data set" + n);  
         Sudoku instance = null;
         
         try {
@@ -76,10 +74,6 @@ class Experiment {
         System.out.println("Nodes - In average: "+ nodeRecords.size() + " 's exp in avg " + averageNode + " and in std " + stdNode);
 
         //instance.print();
-
-      } catch (Exception e) {
-         System.out.println("Thread " +  ID + " got interrupted.");
-      }
    }
 
 }
@@ -110,7 +104,7 @@ class ExperimentThread implements Runnable {
               
         long startTime = System.nanoTime();
         //code
-        if (instance.backtrack()) System.out.println("Runner " +  ID + "Find a solution!"); else System.out.println("Runner " +  ID + "No solution!");
+        if (instance.backtrack()) System.out.println("Runner " +  ID + " Find a solution!"); else System.out.println("Runner " +  ID + " Find no solution!");
         
         long endTime = System.nanoTime();
         
@@ -238,7 +232,5 @@ public class Main {
                 e.run();
             }
         }
-          
     }
-
 }

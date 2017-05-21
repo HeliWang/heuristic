@@ -9,20 +9,7 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.net.URISyntaxException;
 
-public class Sudoku  {
-    
-    /**
-     * total node count
-     */
-    protected int nodeCount;
-   
-    /**
-     * Current Assignment
-     */
-    protected List<List<Variable>> assignment;
-    protected List<Variable> unassignedVars;
-    protected Random random = new Random(System.nanoTime());
-   
+public class Sudoku extends AbstractSudoku {
     public Sudoku(int dataSet) throws IOException, URISyntaxException {
         
         nodeCount = 0;
@@ -72,7 +59,7 @@ public class Sudoku  {
         return this.nodeCount;
     }
     
-    boolean backtrack() {
+    public boolean backtrack() {
         List<Variable> curUnassigned = getUnassignedVars();
         if (curUnassigned.size() == 0) return true;
         Variable var = curUnassigned.remove(0);
@@ -81,10 +68,13 @@ public class Sudoku  {
         for (int value : domain) {
             if (consistencyCheck (var, value)) {
                 var.setVal(value);
+                if (!inference(var)) continue;
                 if (backtrack()) return true;
             }
             var.setVal(0); //set var back
+            inference(var);
         }
+
         curUnassigned.add(0,var);
         return false;
     }
@@ -93,18 +83,16 @@ public class Sudoku  {
         Collections.shuffle(this.unassignedVars, random);
         return this.unassignedVars;
         /*
-         List<Variable> newlist = new ArrayList<Variable> (this.unassignedVars);
+        List<Variable> newlist = new ArrayList<Variable> (this.unassignedVars);
         Collections.shuffle(newlist, random);
         return newlist;
         */
     }
     
     protected List<Integer> orderDomainValues(final Variable var, final List<Variable> vars){
-        /*List<Integer> newDomain = new ArrayList<Integer> (var.domain);
+        List<Integer> newDomain = new ArrayList<Integer> (var.domain);
         Collections.shuffle(newDomain, random);
-        return newDomain;*/
-        Collections.shuffle(var.domain, random);
-        return var.domain;
+        return newDomain;
     }
     
     protected boolean consistencyCheck(Variable var, int val) {
@@ -137,6 +125,68 @@ public class Sudoku  {
 		}
 			 
 	    return true;
+    }
+
+    protected void sortUnassignedVars(List<Variable> vars){
+        return;
+    }
+    
+    protected boolean inference(Variable var) {
+        // Same Row
+        List<Variable> sameRow = assignment.get(var.x);
+        
+        // Same Column
+        List<Variable> sameColumn = new ArrayList<Variable>();
+        for (List<Variable> row : assignment) {
+            sameColumn.add(row.get(var.y));
+        }
+        // Same Box
+        List<Variable> sameBox = new ArrayList<Variable>();
+        for (int u = 0; u < 3; u++) for (int v = 0; v < 3; v++) sameBox.add(assignment.get(3* (var.x/3) + u).get(3* (var.y/3) + v));
+        
+        resetDomain(sameRow, var);
+        resetDomain(sameColumn, var);
+        resetDomain(sameBox, var);
+         
+        inference(sameRow, var);
+        inference(sameColumn, var);
+        inference(sameBox, var);
+		
+	    return checkDomain(sameRow) && checkDomain(sameColumn) && checkDomain(sameBox);
+    }
+
+    private void resetDomain(List<Variable> vars, Variable self){
+        // Reset each domain
+        for (Variable var : vars) {
+            if (var.val != 0) continue;
+            var.domain = new ArrayList<Integer>();
+            for(int i = 1; i <= 9; i++) var.domain.add(i);
+        }
+    }
+    
+    private void inference(List<Variable> vars, Variable self){
+        for (Variable var : vars) {
+            if (var.val == 0) continue;
+			for (Variable varToBeInferenced : vars) {
+			    if (!varToBeInferenced.equals(var)) {
+			        int valToBeRemoved = var.val;
+			        try {
+			            int index = varToBeInferenced.domain.indexOf(valToBeRemoved);
+			            if (index > -1) varToBeInferenced.domain.remove(index);
+			        } catch (Exception e) {
+			            e.printStackTrace();
+			        }
+			    }
+			}
+		}
+    }
+    
+    private boolean checkDomain(List<Variable> vars){
+        for (Variable var : vars) {
+            if (var.val != 0) continue;
+			if (var.domain.size() < 1) return false; 
+		}
+		return true;
     }
 
 }
