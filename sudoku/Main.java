@@ -135,11 +135,11 @@ public class Main {
             }
         } while (!(d >= 1)); 
   
-        Experiment R1 = new Experiment(1, 1);
-        R1.start();
+        for (int rep = 1; rep <= r; rep++){
+            Experiment e = new Experiment(rep, n);
+            e.start();
+        }
           
-        Experiment R2 = new Experiment(2, 1);
-        R2.start();
     }
 
 }
