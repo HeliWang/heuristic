@@ -46,7 +46,6 @@ public class BackTrace {
 	}
 
 	// Algorithms ///
-	
 	private static boolean bracktrack(final ArrayList<ArrayList<SudokuVariable>> ls) {
 		nodeCount++;
 		

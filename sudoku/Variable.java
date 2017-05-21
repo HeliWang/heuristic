@@ -3,7 +3,7 @@ package sudoku;
 import java.lang.*;
 import java.util.*;
 
-public class Variable {
+public class Variable{
 	public int val;
 	public List<Integer> domain;
 	public Stack<List<Integer>> domainHist;

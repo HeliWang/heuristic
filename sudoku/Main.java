@@ -38,7 +38,7 @@ class Experiment {
            System.out.println("Failed to load dataSet Num." + n);
            e.printStackTrace();
         }
-         //     instance.print();
+        //instance.print();
         long startTime = System.nanoTime();
         //code
         if (instance.backtrack()) System.out.println("Runner " +  ID + " :) Find a solution!"); else System.out.println("Runner " +  ID + " - !!!! No solution !!!!");
@@ -154,8 +154,6 @@ class ExperimentThread implements Runnable {
 }
     
 public class Main {
-    
-    
     public static void main(String[] args) {
         Console c = System.console();    
         System.out.println("Enter the data set number (1 easy, 2 medium, 3 hard, 4 evil): ");    
