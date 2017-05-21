@@ -112,7 +112,9 @@ public class Sudoku  {
         Set <Integer> hashsetRow = new HashSet<Integer>();
         hashsetRow.add(val);
         List<Variable> sameRow = assignment.get(var.x);
-		for (Variable vari : sameRow) if (hashsetRow.contains(vari.val) && vari.val > 0) return false; else hashsetRow.add(vari.val);
+		for (Variable vari : sameRow) {
+		    if (hashsetRow.contains(vari.val) && vari.val > 0) return false; else hashsetRow.add(vari.val);
+		} 
 		
         // Same Column
         Set <Integer> hashsetColumn = new HashSet<Integer>();
@@ -128,7 +130,11 @@ public class Sudoku  {
         hashsetBox.add(val);
         List<Variable> sameBox = new ArrayList<Variable>();
         for (int u = 0; u < 3; u++) for (int v = 0; v < 3; v++) sameBox.add(assignment.get(3* (var.x/3) + u).get(3* (var.y/3) + v));
-		for (Variable vari : sameColumn) if (hashsetBox.contains(vari.val) && vari.val > 0) return false; else hashsetBox.add(vari.val);
+        //System.out.println("Same Box:");
+		for (Variable vari : sameBox) {
+            //System.out.print("(" + vari.x + ", " +  vari.y + ") ");
+		    if (hashsetBox.contains(vari.val) && vari.val > 0) return false; else hashsetBox.add(vari.val);
+		}
 			 
 	    return true;
     }

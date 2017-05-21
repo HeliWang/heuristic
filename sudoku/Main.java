@@ -39,7 +39,7 @@ public class Main {
         instance.print();
         
         long endTime = System.nanoTime();
-        System.out.println("Took "+ (endTime - startTime) + " ns or " + NANOSECONDS.toMillis((endTime - startTime)) + " ms or " + NANOSECONDS.toSeconds((endTime - startTime)) + " s" + " Going through" + instance.nodeCount());
+        System.out.println("Took "+ (endTime - startTime) + " ns or " + NANOSECONDS.toMillis((endTime - startTime)) + " ms or " + NANOSECONDS.toSeconds((endTime - startTime)) + " s" + " Going through nodes " + instance.nodeCount());
     }
 
 }
