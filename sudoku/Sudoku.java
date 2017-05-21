@@ -55,31 +55,54 @@ public class Sudoku extends AbstractSudoku {
 		if (this.unassignedVars != null) System.out.println("(Unassigned:" + this.unassignedVars.size() + ")");
     }
     
+    public void printDomain() {
+        System.out.println("Current Assignment:");
+		for (List<Variable> r : assignment) {
+			for (Variable var : r) {
+			  System.out.print("(" + var.x + ", " +  var.y + " - " +  var.val  + ") ");
+			  for (int d : var.domain) System.out.print(d);
+			}
+			System.out.println("");
+		}
+		if (this.unassignedVars != null) System.out.println("(Unassigned:" + this.unassignedVars.size() + ")");
+    }
     public int nodeCount() {
         return this.nodeCount;
     }
     
     public boolean backtrack() {
         List<Variable> curUnassigned = getUnassignedVars();
+        
+    	//  System.out.println(" ");
+    	//  for (Variable var : curUnassigned) System.out.print("(" + var.x + ", " +  var.y + " - " +  var.val  + ") "); 
+    	  
         if (curUnassigned.size() == 0) return true;
-        Variable var = curUnassigned.remove(0);
+        Variable var = curUnassigned.remove(random.nextInt(curUnassigned.size()));
         this.nodeCount++;
         List<Integer> domain = orderDomainValues(var, curUnassigned);
+    	  
         for (int value : domain) {
             if (consistencyCheck (var, value)) {
                 var.setVal(value);
-                if ( (this.mode == 1 || inference(var)) && backtrack()) return true;
+                boolean inferenceResult = this.mode == 1 || inference(var);
+                /*
+                if (!inferenceResult) {
+                    System.out.println("Check " + var.x + " " + var.y + " value " + value);
+                    print();
+                    printDomain();
+                }*/
+                if ( inferenceResult && backtrack()) return true;
             }
             var.setVal(0); //set var back
             if (this.mode != 1) inference(var);
         }
 
-        curUnassigned.add(0,var);
+        curUnassigned.add(var);
         return false;
     }
 
     protected List<Variable> getUnassignedVars() {
-        Collections.shuffle(this.unassignedVars, random);
+        //Collections.shuffle(this.unassignedVars, random);
         return this.unassignedVars;
         /*
         List<Variable> newlist = new ArrayList<Variable> (this.unassignedVars);
