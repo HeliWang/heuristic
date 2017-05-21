@@ -21,8 +21,10 @@ public class Sudoku  {
      */
     protected List<List<Variable>> assignment;
     protected List<Variable> unassignedVars;
+    protected Random random = new Random(System.nanoTime());
    
     public Sudoku(int dataSet) throws IOException, URISyntaxException {
+        
         nodeCount = 0;
         assignment = new ArrayList<List<Variable>>();
         unassignedVars = new ArrayList<Variable>();
@@ -63,7 +65,7 @@ public class Sudoku  {
 			for (Variable var : r) System.out.print(var.getVal() + " ");
 			System.out.println("");
 		}
-		System.out.println("(Unassigned:" + getUnassignedVars().size() + ")");
+		if (this.unassignedVars != null) System.out.println("(Unassigned:" + this.unassignedVars.size() + ")");
     }
     
     public int nodeCount() {
@@ -83,15 +85,25 @@ public class Sudoku  {
             }
             var.setVal(0); //set var back
         }
-        curUnassigned.add(var);
+        curUnassigned.add(0,var);
         return false;
     }
 
     protected List<Variable> getUnassignedVars() {
-       return this.unassignedVars;
+        Collections.shuffle(this.unassignedVars, random);
+        return this.unassignedVars;
+        /*
+         List<Variable> newlist = new ArrayList<Variable> (this.unassignedVars);
+        Collections.shuffle(newlist, random);
+        return newlist;
+        */
     }
     
     protected List<Integer> orderDomainValues(final Variable var, final List<Variable> vars){
+        /*List<Integer> newDomain = new ArrayList<Integer> (var.domain);
+        Collections.shuffle(newDomain, random);
+        return newDomain;*/
+        Collections.shuffle(var.domain, random);
         return var.domain;
     }
     
