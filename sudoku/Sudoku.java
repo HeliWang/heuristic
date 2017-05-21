@@ -32,15 +32,15 @@ public class Sudoku  {
         URI uri = this.getClass().getResource("/sudoku/dataSet/" + String.valueOf(dataSet)).toURI();
         List<String> lines = Files.readAllLines(Paths.get(uri), Charset.defaultCharset());
         int r = 0;
-        System.out.println("");
+        //System.out.println("");
         for (String rLine : lines) {
             List<Variable> row = new ArrayList<Variable>();
             int c = 0;
-            System.out.println("Coordinates:");
+            //System.out.println("Coordinates:");
             for (String val : rLine.split(",")) {
                 Variable var = new Variable (r, c);
                 int n = 0;
-                System.out.print("(" + r + ", " +  c + ") ");
+                //System.out.print("(" + r + ", " +  c + ") ");
 
                 try {
                     n = Integer.parseInt(val); 
@@ -54,7 +54,7 @@ public class Sudoku  {
                 c++;
             }
             r++;
-            System.out.println("");
+            //System.out.println("");
             assignment.add(row);
         }
     }
